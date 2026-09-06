@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asteroid Prospector - Web Game</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            font-family: 'Courier New', monospace;
+        }
+        .terminal-bg {
+            background-color: #0f3460;
+            border: 2px solid #00d4ff;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+        }
+        .console-log {
+            background-color: #0a1e2e;
+            color: #00ff00;
+            font-size: 0.875rem;
+            line-height: 1.4;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #00d4ff;
+        }
+        .resource-bar {
+            background: linear-gradient(90deg, #00d4ff 0%, #0099cc 100%);
+            height: 20px;
+            border-radius: 3px;
+        }
+        .danger {
+            color: #ff4444;
+            font-weight: bold;
+        }
+        .success {
+            color: #00ff00;
+            font-weight: bold;
+        }
+        .warning {
+            color: #ffaa00;
+            font-weight: bold;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+            color: #000;
+            font-weight: bold;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #00ff00 0%, #00cc00 100%);
+        }
+        .glitch {
+            animation: glitch 0.3s ease-in-out;
+        }
+        @keyframes glitch {
+            0%, 100% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+        }
+    </style>
+</head>
+<body class="p-4">
+    <div class="container mx-auto">
+        <!-- HEADER -->
+        <div class="terminal-bg p-4 mb-4 rounded-lg">
+            <h1 class="text-3xl font-bold text-cyan-400">ASTEROID PROSPECTOR v1.0</h1>
+            <p class="text-sm text-cyan-300">Prospection Division | Earth Terran Federation</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <!-- LEFT PANEL: PLAYER STATUS -->
+            <div class="terminal-bg p-4 rounded-lg">
+                <h2 class="text-xl font-bold text-cyan-400 mb-4">▸ PLAYER STATUS</h2>
+                
+                <div class="space-y-3">
+                    <div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span>WILL (Vontade)</span>
+                            <span id="willValue" class="font-bold">0 / 0</span>
+                        </div>
+                        <div class="w-full bg-gray-700 rounded h-6 overflow-hidden">
+                            <div id="willBar" class="resource-bar" style="width: 100%"></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between text-sm mb-1">
+                            <span>ENERGY (Energia)</span>
+                            <span id="energyValue" class="font-bold">0 / 0</span>
+                        </div>
+                        <div class="w-full bg-gray-700 rounded h-6 overflow-hidden">
+                            <div id="energyBar" class="resource-bar" style="width: 100%"></div>
+                        </div>
+                    </div>
+
+                    <div class="pt-3 border-t border-cyan-600">
+                        <p class="text-sm"><span class="text-cyan-400">Credits:</span> <span id="credits" class="font-bold text-yellow-400">0</span> MT</p>
+                        <p class="text-sm"><span class="text-cyan-400">Day/Turn:</span> <span id="dayTurn" class="font-bold">1/1</span></p>
+                        <p class="text-sm"><span class="text-cyan-400">Orbit:</span> <span id="currentOrbit" class="font-bold">None</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CENTER PANEL: NAVIGATION & ACTIONS -->
+            <div class="terminal-bg p-4 rounded-lg">
+                <h2 class="text-xl font-bold text-cyan-400 mb-4">▸ NAVIGATION & ACTIONS</h2>
+                
+                <div class="space-y-3">
+                    <div>
+                        <label class="text-sm text-cyan-300 block mb-2">Select Orbit:</label>
+                        <select id="orbitSelect" class="w-full bg-gray-800 border border-cyan-400 p-2 rounded text-cyan-300">
+                            <option value="">-- Choose Orbit --</option>
+                            <option value="asteroid_belt">Asteroid Belt (2.7-3.6 AU)</option>
+                            <option value="kuiper_belt">Kuiper Belt (30-50 AU)</option>
+                            <option value="oort_cloud">Oort Cloud (2000-200000 AU)</option>
+                        </select>
+                    </div>
+
+                    <button id="scanBtn" class="w-full py-2 px-4 btn-primary rounded font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed">
+                        ► SCAN FOR ASTEROID
+                    </button>
+
+                    <button id="prospectBtn" class="w-full py-2 px-4 btn-primary rounded font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed">
+                        ► PROSPECT ASTEROID
+                    </button>
+
+                    <button id="nextAsteroidBtn" class="w-full py-2 px-4 btn-primary rounded font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed">
+                        ► NAVIGATE TO NEXT
+                    </button>
+
+                    <div class="pt-2 border-t border-cyan-600">
+                        <button id="refineryBtn" class="w-full py-2 px-4 btn-primary rounded font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed">
+                            ► SEND TO REFINERY
+                        </button>
+                        <button id="sellBtn" class="w-full py-2 px-4 btn-primary rounded font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed mt-2">
+                            ► SELL STOCK
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT PANEL: ASTEROID INFO -->
+            <div class="terminal-bg p-4 rounded-lg">
+                <h2 class="text-xl font-bold text-cyan-400 mb-4">▸ ASTEROID SCANNED</h2>
+                
+                <div id="asteroidInfo" class="space-y-2 text-sm">
+                    <p class="text-gray-400">No asteroid scanned yet...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- INVENTORY PANELS -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
+            <!-- RAW MATERIALS -->
+            <div class="terminal-bg p-4 rounded-lg">
+                <h2 class="text-lg font-bold text-cyan-400 mb-3">▸ RAW MATERIALS (m³)</h2>
+                <div id="rawMaterialsList" class="space-y-1 text-sm max-h-64 overflow-y-auto">
+                    <p class="text-gray-400">Empty</p>
+                </div>
+            </div>
+
+            <!-- REFINED MATERIALS -->
+            <div class="terminal-bg p-4 rounded-lg">
+                <h2 class="text-lg font-bold text-cyan-400 mb-3">▸ REFINED MATERIALS (TON)</h2>
+                <div id="refinedMaterialsList" class="space-y-1 text-sm max-h-64 overflow-y-auto">
+                    <p class="text-gray-400">Empty</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONSOLE & LOGS -->
+        <div class="terminal-bg p-4 rounded-lg mt-4">
+            <h2 class="text-lg font-bold text-cyan-400 mb-3">▸ SYSTEM CONSOLE</h2>
+            <div id="console" class="console-log p-3 rounded">
+                <p class="text-cyan-300">[SYSTEM] Asteroid Prospector initialized...</p>
+            </div>
+        </div>
+
+        <!-- MODALS -->
+        <div id="refineryModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div class="terminal-bg p-6 rounded-lg max-w-md w-full mx-4">
+                <h3 class="text-xl font-bold text-cyan-400 mb-4">REFINERY PROCESSING</h3>
+                <p class="text-sm mb-4">Process materials to refined goods?</p>
+                <div id="refineryContent" class="text-sm mb-4"></div>
+                <div class="flex gap-2">
+                    <button id="confirmRefinery" class="flex-1 py-2 btn-primary rounded font-bold">Confirm</button>
+                    <button id="cancelRefinery" class="flex-1 py-2 bg-gray-700 rounded font-bold text-gray-300">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="sellModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div class="terminal-bg p-6 rounded-lg max-w-md w-full mx-4">
+                <h3 class="text-xl font-bold text-cyan-400 mb-4">MARKET TRADING</h3>
+                <p class="text-sm mb-4">Sell refined materials?</p>
+                <div id="sellContent" class="text-sm mb-4 max-h-64 overflow-y-auto"></div>
+                <div class="flex gap-2">
+                    <button id="confirmSell" class="flex-1 py-2 btn-primary rounded font-bold">Sell All</button>
+                    <button id="cancelSell" class="flex-1 py-2 bg-gray-700 rounded font-bold text-gray-300">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="js/dice.js"></script>
+    <script src="js/economy.js"></script>
+    <script src="js/gameEngine.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
