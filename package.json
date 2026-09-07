@@ -1,0 +1,43 @@
+{
+  "name": "asteroid-prospector",
+  "version": "1.0.0",
+  "description": "Web Game por Turnos de Prospecção de Asteroides usando HTML5, CSS3 (TailwindCSS) e JavaScript Vanilla",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8000 --directory .",
+    "serve": "http-server",
+    "dev": "python -m http.server 8000 --directory .",
+    "build": "echo 'No build required for vanilla JS'",
+    "test": "echo 'Run tests in browser console with debug.*'"
+  },
+  "keywords": [
+    "game",
+    "space",
+    "asteroids",
+    "mining",
+    "prospecting",
+    "web-game",
+    "html5",
+    "javascript",
+    "turnbased",
+    "strategy",
+    "daemon-supers"
+  ],
+  "author": "mestrelraefah",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mestrelraefah/asteroid-prospector.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mestrelraefah/asteroid-prospector/issues"
+  },
+  "homepage": "https://github.com/mestrelraefah/asteroid-prospector#readme",
+  "devDependencies": {},
+  "dependencies": {
+    "tailwindcss": "^3.3.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
