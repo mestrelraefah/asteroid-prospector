@@ -1,0 +1,46 @@
+# Dependencies
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Production builds
+dist/
+build/
+*.bundle.js
+*.bundle.css
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Logs
+logs/
+*.log
+
+# Local testing
+.test-cache/
+.coverage/
+
+# OS files
+*.o
+*.a
+*.so
+*.dylib
+
+# Backup files
+*.bak
+*.backup
+
+# Temporary files
+*.tmp
+*.temp
